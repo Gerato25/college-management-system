@@ -43,7 +43,6 @@ $course_categories = get_course_categories();
                         window.location.reload(true);
                     } else if (json.Resp_code != 'RCS') {
                         toastr.error(json.Resp_desc)
-
                     }
                     return json.data ? json.data : [];
                 },
