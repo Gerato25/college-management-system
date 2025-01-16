@@ -89,6 +89,11 @@ $courses = get_courses();
                     class: 'compact all',
                 },
                 {
+                    title: 'Account Status',
+                    data: 'account_status',
+                    class: 'compact all ',
+                },
+                {
                     title: 'Action',
                     data: null,
                     class: 'compact all',
@@ -321,11 +326,21 @@ $courses = get_courses();
                 </div>
 
                 <div class="row mt-2">
-                    <div class="mb-6">
+                    <div class="col-6 mb-6">
                         <label class="form-label" for="course_name">Courses</label>
                         <select class="form-control" id="course_name">
                             <option value="">Select Course</option>
                             ${courses.map(courses => `<option value="${courses.id}" ${courses.id == showtd.course ? 'selected' : ''}>${courses.course_name}</option>`).join()}
+                        </select>
+                    </div>
+                    <div class="col-6 mb-6">
+                        <label class="form-label" for="course_name">Account Status</label>
+                        <select class="form-control" id="account_status">
+                            <option value="">Select Account Status</option>
+                          <option value="ACTIVE" ${showtd.account_status == 'ACTIVE' ? 'selected' : ''} >Active</option>
+                             <option value="PENDING" ${showtd.account_status == 'PENDING' ? 'selected' : ''} >Pending</option>
+                                <option value="BLOCKED" ${showtd.account_status == 'BLOCKED' ? 'selected' : ''} >Blocked</option>
+                                   <option value="INACTIVE" ${showtd.account_status == 'INACTIVE' ? 'selected' : ''} >Inactive</option>
                         </select>
                     </div>
                 </div>
@@ -354,7 +369,7 @@ $courses = get_courses();
                     father_name: $('#father_name').val(),
                     mother_name: $('#mother_name').val(),
                     course_id: $('#course_name').val(),
-                     
+                    account_status : $('#account_status').val() 
                 }
 
                 $.ajax({

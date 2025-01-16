@@ -54,35 +54,59 @@ class Student extends CI_Controller
 
 		$data = [];
 
+		$password = md5('welcome@123');
+		$role_id = 3;
+		$account_status = 'ACTIVE';
+
 		$params = $this->input->post();
 
-		if (validate_field(@$params['student_name'], 'strname')) {
+		$all_students = $this->students_md->get_students();
 
-			$insert_data = [
-				'student_name' => $params['student_name'],
-				'email' => $params['email'],
-				'mobile' => $params['mobile'],
-				'address' => $params['address'],
-				'father_name' => $params['father_name'],
-				'mother_name' => $params['mother_name'],
-				'course' => $params['course_name']
+		foreach($all_students as $student){
+			if($student['mobile'] !== $params['mobile']){
+				
+				if (validate_field(@$params['student_name'], 'strname')) {
 
-			];
-			if ($this->students_md->add_students($insert_data)) {
-				$data['Resp_code'] = 'RCS';
-				$data['Resp_desc'] = 'Student Added successfully';
-				$data['data'] = [];
-			} else {
-				$data['Resp_code'] = 'ERR';
-				$data['Resp_desc'] = 'Internal Processing Error';
-				$data['data'] = [];
+					$insert_data = [
+						'student_name' => $params['student_name'],
+						'email' => $params['email'],
+						'password' => $password,
+						'mobile' => $params['mobile'],
+						'address' => $params['address'],
+						'father_name' => $params['father_name'],
+						'mother_name' => $params['mother_name'],
+						'course' => $params['course_name'],
+						'created_on' => date('Y-m-d H:i:s'),
+						'role_id' => $role_id,
+						'account_status' => $account_status,
+		
+					];
+		
+		
+					if ($this->students_md->add_students($insert_data)) {
+						$data['Resp_code'] = 'RCS';
+						$data['Resp_desc'] = 'Student Added successfully';
+						$data['data'] = [];
+					} else {
+						$data['Resp_code'] = 'ERR';
+						$data['Resp_desc'] = 'Internal Processing Error';
+						$data['data'] = [];
+					}
+		
+					
+				} else {
+					$data['Resp_code'] = 'ERR';
+					$data['Resp_desc'] = 'Invalid Student Name';
+					$data['data'] = [];
+				}
 			}
-		} else {
-			$data['Resp_code'] = 'ERR';
-			$data['Resp_desc'] = 'Invalid Student Name';
-			$data['data'] = [];
+			else{
+				$data['Resp_code'] = 'ERR';
+				$data['Resp_desc'] = 'Mobile Number Already Exist !';
+				$data['data'] = [];
+				
+			}
 		}
-
 		exit(json_encode($data));
 	}
 
@@ -116,7 +140,8 @@ class Student extends CI_Controller
 					'father_name' => $params['father_name'],
 					'mother_name' => $params['mother_name'],
 					'course' => $params['course_id'], // update course id on studnet table
-					'student_id' => $params['student_id']
+					'student_id' => $params['student_id'],
+					'account_status' => $params['account_status']
 				];
 
 				if ($this->students_md->update_student($update_array)) {
