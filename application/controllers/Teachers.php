@@ -218,7 +218,7 @@ class Teachers extends CI_Controller
 		exit(json_encode($data));
 	}
 
-	/* ----------------------- Function to Delete Student ----------------------- */
+	/* ----------------------- Function to Delete Teacher ----------------------- */
 
 	public function delete_teacher()
 	{
@@ -262,16 +262,5 @@ class Teachers extends CI_Controller
 		exit(json_encode($data));
 	}
 
-	/* ------------- Function To Show Pending Student Registrations ------------- */
-	public function pending_registration()
-	{
-		$session = $this->session->userdata('cms_session');
-		if (!$session) {
-			$this->session->sess_destroy();
-			redirect('login');
-		}
-		$this->load->view('template/header');
-		$this->load->view('student/pending_students');
-		$this->load->view('template/footer');
-	}
+
 }
