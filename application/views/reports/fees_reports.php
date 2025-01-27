@@ -1,4 +1,4 @@
-<?php $fees = get_fees_list();?>
+<?php $student_list = get_student_list();?>
 
 <div class="card" id="first_screen">
     <div class="d-flex justify-content-between align-items-center pe-4">
@@ -12,7 +12,7 @@
                         <select class="form-control" id="student_name">
                             <option value="" selected disabled>Select Student</option>
                             
-                            <?php foreach($fees as $student) { ?>
+                            <?php foreach($student_list as $student) { ?>
 
                                 <option value="<?= $student['student_id'] ?>"><?=  $student['student_name'] ?></option>
 
@@ -69,15 +69,23 @@
             "ajax": {
                 url: "<?= base_url() ?>Reports/get_fees_list",
                 type: "POST",
+
+                data: function(d) {
+                    // Add filter values to the request payload
+                    d.student_name = $('#student_name').val(); // Filter by student name
+                    d.from_date = $('#from_date').val(); // Filter by from date
+                    d.to_date = $('#to_date').val(); // Filter by to date
+                },
                 dataSrc: function(json) {
-                    console.log();
                     if (json.Resp_code == 'RLD') {
                         window.location.reload(true);
                     } else if (json.Resp_code != 'RCS') {
-                        toastr.error(json.Resp_desc)
+                        toastr.error(json.Resp_desc);
                     }
                     return json.data ? json.data : [];
-                },
+                }
+
+                
             },
             columns: [{
                     title: 'Student Name',
@@ -134,38 +142,9 @@
 
         });
 
-
-        $('#submit').click(function(e) {
-                const params = {
-                    valid: true,
-                    student_name: $('#student_name').val(),
-                    from_date : $('#from_date').val(),
-                    to_date : $('#to_date').val(),
-                }
-
-                $.ajax({
-                        url: '<?= base_url() ?>Reports/fees_filter',
-                        method: 'POST',
-                        dataType: 'JSON',
-                        data: params,
-                        success: function(res) {
-                            console.log(res);
-                            if (res.Resp_code === 'RCS') {
-                                toastr.info(res.Resp_desc)
-                                $('#back_to_first_screen').click()
-                                fees_reports_table.ajax.reload()
-                            } else if (res.Resp_code === 'RLD') {
-                                window.location.reload();
-                            } else {
-                                toastr.error(res.Resp_desc)
-                            }
-                        }
-                    })
-                
-            })
-
-
-
+        $('#submit').click(function () {
+            fees_reports_table.ajax.reload(); // Reload table with updated filters
+    });
 
 
     })
